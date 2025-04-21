@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Turn.js 페이지 넘김 예제</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .book-container {
+            margin: 0 auto;
+            width: 400px;
+            height: 300px;
+            position: relative;
+        }
+
+        #flipbook {
+            width: 400px;
+            height: 300px;
+        }
+
+        #flipbook .page {
+            background-color: white;
+            border: 1px solid #dedede;
+            padding: 20px;
+            text-align: center;
+            font-size: 16px;
+            color: #333;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        #flipbook .hard {
+            background: #3498db !important;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: #2980b9;
+        }
+
+        .page-num {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        h2 {
+            margin-top: 10px;
+            color: #2c3e50;
+        }
+
+        .instructions {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        #debug-info {
+            margin-top: 20px;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: monospace;
+            text-align: left;
+            display: none;
+        }
+    </style>
+    <!-- jQuery 라이브러리 먼저 로드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+
+    <!-- 로컬 turn.js 파일 로드 -->
+    <script src="turn.js"></script>
+
+    <!-- 디버깅용 스크립트 -->
+    <script>
+        window.onerror = function(message, source, lineno, colno, error) {
+            var debugInfo = document.getElementById('debug-info');
+            debugInfo.style.display = 'block';
+            debugInfo.innerHTML += "<p>오류: " + message + "</p>";
+            console.error("JS 오류:", message, "위치:", source, "라인:", lineno);
+        };
+
+        // jQuery 및 turn.js 로딩 확인
+        window.onload = function() {
+            var debugInfo = document.getElementById('debug-info');
+
+            if (typeof jQuery === 'undefined') {
+                debugInfo.style.display = 'block';
+                debugInfo.innerHTML += "<p>jQuery가 로드되지 않았습니다.</p>";
+                console.error("jQuery가 로드되지 않았습니다.");
+            } else {
+                console.log("jQuery 버전:", $.fn.jquery);
+                debugInfo.innerHTML += "<p>jQuery 버전: " + $.fn.jquery + "</p>";
+            }
+
+            if (typeof $.fn.turn === 'undefined') {
+                debugInfo.style.display = 'block';
+                debugInfo.innerHTML += "<p>turn.js가 로드되지 않았습니다. 파일 경로를 확인하세요.</p>";
+                console.error("turn.js가 로드되지 않았습니다. 파일 경로를 확인하세요.");
+            } else {
+                console.log("turn.js가 성공적으로 로드되었습니다.");
+                debugInfo.innerHTML += "<p>turn.js 로드 성공!</p>";
+            }
+        };
+    </script>
+</head>
+<body>
+<div class="container">
+    <h1>Turn.js 페이지 넘김 예제</h1>
+
+    <div class="instructions">
+        <p><strong>사용법:</strong> 페이지 모서리를 클릭하고 드래그하여 페이지를 넘기세요. 또는 아래 버튼을 사용하세요.</p>
+    </div>
+
+    <div class="book-container">
+        <div id="flipbook">
+            <div class="hard">
+                <h2>표지</h2>
+                <p>Turn.js를 이용한<br>책 넘기기 예제</p>
+            </div>
+            <div class="page">
+                <h2>페이지 1</h2>
+                <p>이것은 첫 번째 페이지입니다.</p>
+                <p>페이지 모서리를 드래그해서 넘겨보세요</p>
+            </div>
+            <div class="page">
+                <h2>페이지 2</h2>
+                <p>두 번째 페이지에 오신 것을 환영합니다.</p>
+                <p>이미지도 추가할 수 있습니다:</p>
+                <img src="/api/placeholder/150/100" alt="예시 이미지">
+            </div>
+            <div class="page">
+                <h2>페이지 3</h2>
+                <p>세 번째 페이지입니다.</p>
+                <p>다양한 콘텐츠를 추가할 수 있습니다.</p>
+            </div>
+            <div class="page">
+                <h2>페이지 4</h2>
+                <p>네 번째 페이지입니다.</p>
+                <p>책의 각 페이지에 원하는 내용을 넣을 수 있습니다.</p>
+            </div>
+            <div class="hard">
+                <h2>마지막 페이지</h2>
+                <p>이것으로 예제가 끝났습니다.</p>
+                <p>감사합니다!</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prev">이전 페이지</button>
+        <button id="next">다음 페이지</button>
+    </div>
+
+    <div class="page-num">페이지: <span id="page-number">1</span> / <span id="total-pages">6</span></div>
+
+    <!-- 디버그 정보 표시 영역 -->
+    <div id="debug-info"></div>
+</div>
+
+<script>
+    // DOM이 완전히 로드된 후 실행
+    $(function() {
+        try {
+            // flipbook 초기화
+            $("#flipbook").turn({
+                width: 400,
+                height: 300,
+                autoCenter: true,
+                display: 'single',
+                duration: 1000,
+                gradients: true,
+                elevation: 50,
+                when: {
+                    turning: function(e, page, view) {
+                        // 페이지 번호 업데이트
+                        $('#page-number').text(page);
+                    },
+                    turned: function(e, page, view) {
+                        // 페이지가 넘어간 후 실행되는 코드
+                        console.log("현재 페이지: " + page);
+                    }
+                }
+            });
+
+            // 총 페이지 수 설정
+            var totalPages = $("#flipbook").turn("pages");
+            $('#total-pages').text(totalPages);
+
+            // 버튼 이벤트
+            $('#prev').click(function() {
+                $("#flipbook").turn("previous");
+                return false;
+            });
+
+            $('#next').click(function() {
+                $("#flipbook").turn("next");
+                return false;
+            });
+
+            // 키보드 이벤트
+            $(document).keydown(function(e) {
+                if (e.keyCode == 37) { // 왼쪽 화살표
+                    $("#flipbook").turn("previous");
+                } else if (e.keyCode == 39) { // 오른쪽 화살표
+                    $("#flipbook").turn("next");
+                }
+            });
+
+            // 페이지 클릭 이벤트 (페이지 넘기기 추가)
+            $('.page').click(function(e) {
+                // 페이지의 왼쪽 절반을 클릭하면 이전 페이지, 오른쪽 절반을 클릭하면 다음 페이지
+                var pageWidth = $(this).width();
+                var clickX = e.pageX - $(this).offset().left;
+
+                if (clickX < pageWidth / 2) {
+                    $("#flipbook").turn("previous");
+                } else {
+                    $("#flipbook").turn("next");
+                }
+            });
+
+            console.log("turn.js 초기화 완료!");
+        } catch (error) {
+            // 오류 발생 시 디버그 정보에 표시
+            var debugInfo = document.getElementById('debug-info');
+            debugInfo.style.display = 'block';
+            debugInfo.innerHTML += "<p>초기화 오류: " + error.message + "</p>";
+            console.error("turn.js 초기화 오류:", error);
+        }
+    });
+</script>
+</body>
+</html>
